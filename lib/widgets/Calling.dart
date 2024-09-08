@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:oder_application/models/SelectedProduct.dart';
 import 'package:oder_application/models/Product.dart';
+import 'package:oder_application/models/SelectedProduct.dart';
+import 'package:oder_application/widgets/WaitingCompletion.dart';
 
-class WaitingCompletion extends StatefulWidget {
-  final Function(DateTime, List<SelectedProduct>) onKeyPressed;
+class Calling extends StatefulWidget {
+  final Function(DateTime time, List<SelectedProduct> products) onKeyPressed;
   final double width;
   final double height;
-  Map<DateTime,List<SelectedProduct>> waitingOder;
+  Map<DateTime,List<SelectedProduct>> callingOder;
 
-  WaitingCompletion({required this.onKeyPressed, required this.width, required this.height, required this.waitingOder});
+  Calling({required this.onKeyPressed, required this.width, required this.height, required this.callingOder});
 
   @override
-  State<WaitingCompletion> createState() => _WaitingCompletion();
+  State<Calling> createState() => _Calling();
 }
 
-class _WaitingCompletion extends State<WaitingCompletion> {
+class _Calling extends State<Calling> {
 
   int number = 0;
 
@@ -31,21 +32,21 @@ class _WaitingCompletion extends State<WaitingCompletion> {
             height: widget.height*0.03,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text('出来上がり待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text('呼び出し待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
           ),
           Container(
   width: widget.width * 0.95,
   height: widget.height * 0.8,
   child: ListView(
     children: [
-      for (var entry in widget.waitingOder.entries)
+      for (var entry in widget.callingOder.entries)
         InkWell(
           onTap: () {
             showDialog(
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('この注文を呼び出しますか？'),
+                  title: Text('この注文を受け渡しますか？'),
                   content: (SingleChildScrollView(
                     child: ListBody(
                       children: [
@@ -76,7 +77,7 @@ class _WaitingCompletion extends State<WaitingCompletion> {
               }
             );
           },
-          child:Container(
+          child: Container(
             color: Color.fromARGB(248, 247, 195, 131),
             margin: EdgeInsets.symmetric(vertical: 8.0),
             padding: EdgeInsets.all(8.0),
