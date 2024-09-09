@@ -92,7 +92,7 @@ class _WaitingCompletion extends State<WaitingCompletion> {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        color: Color.fromARGB(248, 208, 247, 131),
+                        color: Color.fromARGB(248, 131, 247, 168),
                         child: Text(
                           '${entry.value[i].object.name} (${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
                         ),
