@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:oder_application/models/Product.dart';
-import 'package:oder_application/models/SelectedProduct.dart';
+import 'package:oder_application/models/ServedProduct.dart';
 import 'package:oder_application/widgets/Calling.dart';
 import 'package:oder_application/widgets/WaitingCompletion.dart';
+import 'package:oder_application/firestore.dart';
 
 
 class CallWaittingPage extends StatefulWidget {
   CallWaittingPage({super.key,required this.title, required this.waitingOder, required this.callingOder});
 
   final String title;
-  Map<DateTime,List<SelectedProduct>> waitingOder;
-  Map<DateTime,List<SelectedProduct>> callingOder;
+  Map<DateTime,List<ServedProduct>> waitingOder;
+  Map<DateTime,List<ServedProduct>> callingOder;
 
 
   @override
@@ -18,6 +19,42 @@ class CallWaittingPage extends StatefulWidget {
 }
 
 class _CallWaittingPage extends State<CallWaittingPage> {
+
+  late Firestore collection;
+  List<Product> productsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+      
+
+    collection = Firestore();
+    fetchProducts();
+    fetchServedProducts();
+    
+
+    Map<DateTime,List<ServedProduct>> t = widget.waitingOder;
+    debugPrint('p$t');
+  }
+
+  Future<void> fetchServedProducts() async {
+    Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getServedProduct(productsList);
+    setState(() {
+      widget.waitingOder = fetchedProducts;
+    });
+    
+    debugPrint("k${fetchedProducts}");
+  }
+
+  Future<void> fetchProducts() async {
+    List<Product> fetchedProducts = await collection.getProductList();
+    setState(() {
+      productsList = fetchedProducts;
+    });
+    
+    debugPrint("k${fetchedProducts}");
+  }
+  
   
   @override
   Widget build(BuildContext context) {
@@ -26,11 +63,14 @@ class _CallWaittingPage extends State<CallWaittingPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
+
+    
+
     void nullFunction(String a){
 
     }
 
-    void getCallOder(DateTime time, List<SelectedProduct> products){
+    void getCallOder(DateTime time, List<ServedProduct> products){
 
       setState(() {
         widget.callingOder.addEntries([
@@ -41,7 +81,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
       
     }
 
-    void callingCustamer(DateTime time, List<SelectedProduct> products){
+    void callingCustamer(DateTime time, List<ServedProduct> products){
 
       setState(() {
         widget.callingOder.remove(time);

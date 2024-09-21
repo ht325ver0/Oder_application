@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Product.dart';
 
-class SelectedProduct{
+class ServedProduct{
   ///商品(Product)
   Product object;
   ///オプションの番号
@@ -10,18 +10,21 @@ class SelectedProduct{
   int oderPieces;
   ///商品の価格(int)
   ///
-  String memo;
+  String? memo;
 
-  SelectedProduct({
+  DateTime? time;
+
+  ServedProduct({
     required this.object,
     required this.optionNumber,
     required this.oderPieces,
-    required this.memo,
+    this.memo = null,
+    this.time = null
   });
 
   ///小計計算
   int calculatSubtotal(){
-    int subtotal = this.object.prise * this.oderPieces;
+    int subtotal = this.object.price * this.oderPieces;
     int discount = (oderPieces ~/ 3) * 30;
     subtotal -= discount;
     return subtotal;

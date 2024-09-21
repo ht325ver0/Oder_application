@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:oder_application/models/Product.dart';
-import 'package:oder_application/models/SelectedProduct.dart';
+import 'package:oder_application/models/ServedProduct.dart';
 import 'package:oder_application/widgets/WaitingCompletion.dart';
 
 class Calling extends StatefulWidget {
-  final Function(DateTime time, List<SelectedProduct> products) onKeyPressed;
+  final Function(DateTime time, List<ServedProduct> products) onKeyPressed;
   final double width;
   final double height;
-  Map<DateTime,List<SelectedProduct>> callingOder;
+  Map<DateTime,List<ServedProduct>> callingOder;
 
   Calling({required this.onKeyPressed, required this.width, required this.height, required this.callingOder});
 
