@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: CallWaittingPage(title: 'タイトル',waitingOder: {},callingOder: {},),
+      home: CallWaittingPage(title: 'タイトル',waitingOder:  {DateTime.utc(1989, 11, 9):[product1,product2],DateTime.utc(1989, 11, 10):[product3],DateTime.utc(1989, 11, 11):[product4]},callingOder: {},),
     );
   }
 }

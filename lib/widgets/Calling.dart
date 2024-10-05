@@ -51,7 +51,7 @@ class _Calling extends State<Calling> {
                     child: ListBody(
                       children: [
                         for (int i = 0; i < entry.value.length; i++)
-                           Text(
+                          Text(
                             '${entry.value[i].object.name} (${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
                           ),
                       ],

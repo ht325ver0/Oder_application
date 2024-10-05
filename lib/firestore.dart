@@ -11,6 +11,31 @@ class Firestore{
 
   final db = FirebaseFirestore.instance;
 
+    bool isWithin5Seconds(DateTime a, DateTime b) {
+      return (a.difference(b).inSeconds).abs() <= 5;
+    }
+
+    void addServedProductToMap(Map<DateTime, List<ServedProduct>> map, DateTime dateTime, ServedProduct servedProduct) {
+      DateTime? matchingKey;
+
+      // 既存のキーの中から5秒以内のものを探す
+      for (var key in map.keys) {
+        if (isWithin5Seconds(key, dateTime)) {
+          matchingKey = key;
+          break;
+        }
+      }
+
+      if (matchingKey != null) {
+        // 既存のキーに追加
+        map[matchingKey]!.add(servedProduct);
+      } else {
+        // 新しいキーとして追加
+        map[dateTime] = [servedProduct];
+      }
+    }
+
+
   Future<List<Product>> getProductList() async {
     try {
       CollectionReference collectionRef = db.collection('productCollection');
@@ -42,33 +67,59 @@ class Firestore{
     String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     Product object = Product(name: "", stock: 0, price: 0, options: []);
 
-    var snapshot =  await db.collection('servedProduct').doc(todayDate).collection('2').get();
-    debugPrint('c');
-    snapshot.docChanges.forEach((element){
-      var name = element.doc.get('productName');
-      for(int i = 0; i < products.length; i++){
-        if(name == products[i].name){
-          object = products[i];
+
+    //ここのjは DBのServedProduct/今日の日付/コレクションの番号<-これに対応している。
+    for(int j = 1; j < 30; j++){
+      var snapshot =  await db.collection('servedProduct/$todayDate/$j').get();
+      debugPrint('${j}m');
+      if (snapshot.docs.isEmpty) {
+        debugPrint('No documents found in the collection11');
+        break;
+      }
+      try{
+      for (var element in snapshot.docs) {
+        
+        var name = element.get('productName');
+        
+        ///ここバグ原因
+        for(int i = 0; i < products.length; i++){
+          debugPrint('a${name}');
+          if(name == products[i].name){
+              debugPrint("pp$name");
+              object = products[i];
+          }
         }
+        Timestamp timestamp = element.get('time');  // Firestoreから取得したタイムスタンプ
+        DateTime dateTime = timestamp.toDate();
+        addServedProductToMap(waitingOder, dateTime, ServedProduct(
+          object: object, 
+          optionNumber: element.get('option'), 
+          oderPieces: element.get('quantity'), 
+          memo: null, 
+          time: null
+        ));
+        
+          
+            
+          
+        };
+      }catch(e){
+        debugPrint('$e');
+        continue;
       }
-      Timestamp timestamp = element.doc.get('time');  // Firestoreから取得したタイムスタンプ
-      DateTime dateTime = timestamp.toDate();
-      if(waitingOder[dateTime] == null){
-        waitingOder[dateTime] = [(ServedProduct(object: object, optionNumber: element.doc.get('option'), oderPieces: element.doc.get('quantity'), memo: null, time: null))];
-      }else{
-        waitingOder[dateTime]!.add(ServedProduct(object: object, optionNumber: element.doc.get('option'), oderPieces: element.doc.get('quantity'), memo: null, time: null));
+      
+
+    }
+    try{
+    for (var entry in waitingOder.entries){
+      debugPrint('${entry.key}');
+      for(var i in entry.value){
+        debugPrint('${i.object}');
       }
-      debugPrint('z$waitingOder');
-    });
-
-    
-
-  
-
-    debugPrint('b');
-
-
-
+    }
+    }catch(e){
+      debugPrint('$e');
+    }
 
     final p = await db.collection('servedProduct').doc(todayDate);
     return waitingOder;

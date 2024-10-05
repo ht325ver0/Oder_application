@@ -23,27 +23,14 @@ class _CallWaittingPage extends State<CallWaittingPage> {
   late Firestore collection;
   List<Product> productsList = [];
 
-  @override
-  void initState() {
-    super.initState();
-      
-
-    collection = Firestore();
-    fetchProducts();
-    fetchServedProducts();
-    
-
-    Map<DateTime,List<ServedProduct>> t = widget.waitingOder;
-    debugPrint('p$t');
-  }
-
+  
   Future<void> fetchServedProducts() async {
     Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getServedProduct(productsList);
     setState(() {
       widget.waitingOder = fetchedProducts;
     });
     
-    debugPrint("k${fetchedProducts}");
+    debugPrint("q${fetchedProducts}");
   }
 
   Future<void> fetchProducts() async {
@@ -54,6 +41,39 @@ class _CallWaittingPage extends State<CallWaittingPage> {
     
     debugPrint("k${fetchedProducts}");
   }
+  void nullFunction(String a){
+
+  }
+
+  void getCallOder(DateTime time, List<ServedProduct> products){
+
+    setState(() {
+      widget.callingOder.addEntries([
+        MapEntry(time, products),
+      ]);
+      widget.waitingOder.remove(time);
+    });
+      
+  }
+
+  void callingCustamer(DateTime time, List<ServedProduct> products){
+
+    setState(() {
+      widget.callingOder.remove(time);
+    });
+      
+  }
+
+  @override
+  void initState() {
+    super.initState();
+      
+    collection = Firestore();
+    fetchProducts();
+    fetchServedProducts();
+    
+  }
+
   
   
   @override
@@ -66,28 +86,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
 
     
 
-    void nullFunction(String a){
-
-    }
-
-    void getCallOder(DateTime time, List<ServedProduct> products){
-
-      setState(() {
-        widget.callingOder.addEntries([
-          MapEntry(time, products),
-        ]);
-        widget.waitingOder.remove(time);
-      });
-      
-    }
-
-    void callingCustamer(DateTime time, List<ServedProduct> products){
-
-      setState(() {
-        widget.callingOder.remove(time);
-      });
-      
-    }
+    
 
 
     return Scaffold(
