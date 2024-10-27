@@ -30,7 +30,7 @@ class _WaitingCompletion extends State<WaitingCompletion> {
         children: [
           Container(
             width: widget.width,
-            height: widget.height*0.03,
+            height: widget.height*0.05,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(child:Text('出来上がり待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),

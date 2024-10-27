@@ -29,7 +29,7 @@ class _Calling extends State<Calling> {
         children: [
           Container(
             width: widget.width,
-            height: widget.height*0.03,
+            height: widget.height*0.05,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(child:Text('呼び出し待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
@@ -87,7 +87,7 @@ class _Calling extends State<Calling> {
                           children: [
                             Text(
                             '${entry.value[0].counter}番,${entry.key.hour}:${entry.key.minute}', // DateTimeの表示
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                           ),
                             for (int i = 0; i < entry.value.length; i++)
                               Column(

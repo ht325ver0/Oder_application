@@ -77,9 +77,93 @@ class Firestore{
     }
   }
 
+  Future<Map<DateTime,List<ServedProduct>>> getServedProduct(List<Product> products, int counter) async {
+    try{
+      Map<DateTime,List<ServedProduct>> serveOder = {};
+      int servedCounter;
+      Product? object;
+      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      DocumentReference todayData = db.collection('servedProduct').doc(today);
+
+      debugPrint('Getting document for today: $today');
+
+      for(int i = 0; i < counter; i++){
+        CollectionReference customer = todayData.collection('${i}');
+        QuerySnapshot customerSnapshot = await customer.get();
+
+        int oderAmount = customerSnapshot.size;
+
+        DocumentSnapshot sta = await customer.doc('Info').get();
+
+        debugPrint('${sta}');
+
+
+        int id = 0;
+
+        if(sta.exists){
+          id = sta.get('id');
+        }
+
+        debugPrint('id = ${id}');
+
+
+        for (QueryDocumentSnapshot doc in customerSnapshot.docs) {
+          // ドキュメントIDを取得
+          String docId = doc.id;
+          // ドキュメントデータを取得
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          
+          // 取得した情報を表示
+          print('Document ID: $docId');
+          print('Document Data: $data');
+
+          if(docId != 'Info'){
+            if(sta.get('cooked') == true && sta.get('served') == false){
+              debugPrint('eene');
+              Timestamp timestamp = data['time'];
+              DateTime dateTime = timestamp.toDate();
+              var name = data['productName'];
+              for(var p in products){
+                if(p.name == name){
+                  object = p;
+                } 
+              }
+              if(object == null){
+                object = Product(name: "non", stock: 0, price: 0, options: []);
+              }
+            
+              addServedProductToMap(serveOder, dateTime, ServedProduct(
+                object: object, 
+                optionNumber: data['option'],
+                oderPieces: data['quantity'], 
+                memo: '',
+                time: dateTime,
+                counter: id,
+              ));
+            }
+          }
+
+        
+        }///ここの処理から受け渡し待ちの商品の状態を確認して取得する。
+
+
+          
+        }
+        return serveOder;
+      }
+
+      
+     catch(e) {
+
+      debugPrint('Error: ${e}');
+      return {};
+    }
+  }
+
+
   
 
-  Future<Map<DateTime,List<ServedProduct>>> getServedProduct(List<Product> products, int counter) async { 
+  Future<Map<DateTime,List<ServedProduct>>> getCookingProducts(List<Product> products, int counter) async { 
     try {
       Map<DateTime,List<ServedProduct>> waitingOder = {};
       int servedCounter;
@@ -107,7 +191,7 @@ class Firestore{
         debugPrint('id = ${id}');
 
         if(sta.exists){
-          servedState = sta.get('served');
+          servedState = sta.get('cooked');
           id = sta.get('id');
         }
 
@@ -237,7 +321,7 @@ class Firestore{
 
   ///dbの受け取り待ち(served)の状態を変える.引数{counter:何番目の客かで判定}
   
-  Future<void> sarved(DateTime date, List<ServedProduct> p, int counter) async {
+  Future<void> servedProduct(DateTime date, List<ServedProduct> p, int counter) async {
     try{
       int co = p[0].counter;
       debugPrint('co = ${co}');
@@ -260,6 +344,32 @@ class Firestore{
       }
     } catch(e) {
       debugPrint('ChangeServedStateError:${e}');
+    }
+  }
+  
+  Future<void> completeCooking(DateTime date, List<ServedProduct> p, int counter) async {
+    try{
+      int co = p[0].counter;
+      debugPrint('co = ${co}');
+      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      DocumentReference todayData = db.collection('servedProduct').doc(today);
+      for(int i = 1; i <= counter; i++){
+        DocumentReference customer = todayData.collection('${i}').doc('Info');
+        DocumentSnapshot customerData = await customer.get();
+        int oderId = 0;
+        if(customerData.exists){
+          debugPrint('ex');
+          oderId = customerData.get('id');
+        }
+        debugPrint('oderid = ${oderId}');
+        if(oderId == co){
+          customer.update({'cooked': true});
+        }
+        
+        debugPrint('${customerData.get('cooked')}');
+      }
+    } catch(e) {
+      debugPrint('ChangeCookedStateError:${e}');
     }
 
   }

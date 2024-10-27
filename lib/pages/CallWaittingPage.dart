@@ -47,9 +47,11 @@ class _CallWaittingPage extends State<CallWaittingPage> {
 
   Future<void> fetchServedProducts() async {
     try{
-      Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getServedProduct(productsList, widget.counter);
+      Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getCookingProducts(productsList, widget.counter);
+      Map<DateTime,List<ServedProduct>> fetchedServeProducts = await collection.getServedProduct(productsList, widget.counter);
       setState(() {
         widget.waitingOder = fetchedProducts;
+        widget.callingOder = fetchedServeProducts;
       });
       
       debugPrint("qa${fetchedProducts}");
@@ -67,7 +69,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
         MapEntry(time, products),
       ]);
       widget.waitingOder.remove(time);
-      collection.sarved(time, products, widget.counter);
+      collection.completeCooking(time, products, widget.counter);
     });
       
   }
@@ -76,6 +78,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
 
     setState(() {
       widget.callingOder.remove(time);
+      collection.servedProduct(time,products,widget.counter);
     });
       
   }
