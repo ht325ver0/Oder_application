@@ -32,83 +32,89 @@ class _Calling extends State<Calling> {
             height: widget.height*0.03,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text('呼び出し待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text('呼び出し待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
           ),
           Container(
-  width: widget.width * 0.95,
-  height: widget.height * 0.8,
-  child: ListView(
-    children: [
-      for (var entry in widget.callingOder.entries)
-        InkWell(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text('この注文を受け渡しますか？'),
-                  content: (SingleChildScrollView(
-                    child: ListBody(
-                      children: [
-                        for (int i = 0; i < entry.value.length; i++)
-                          Text(
-                            '${entry.value[i].object.name} (${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
+            width: widget.width * 0.95,
+            height: widget.height * 0.8,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var entry in widget.callingOder.entries)
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('この注文を受け渡しますか？'),
+                              content: (SingleChildScrollView(
+                                child: ListBody(
+                                  children: [
+                                    for (int i = 0; i < entry.value.length; i++)
+                                      Text(
+                                        '${entry.value[i].object.name} (${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
+                                      ),
+                                  ],
+                                ),
+                              )),
+                              actions:[
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+                                    widget.onKeyPressed(entry.key ,entry.value);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('NO'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ]
+                              
+                            );
+                          }
+                        );
+                      },
+                      child: Container(
+                        color: Color.fromARGB(248, 247, 195, 131),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                            '${entry.value[0].counter}番,${entry.key.hour}:${entry.key.minute}', // DateTimeの表示
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                      ],
-                    ),
-                  )),
-                  actions:[
-                    TextButton(
-                      child: Text('OK'),
-                      onPressed: () {
-                        widget.onKeyPressed(entry.key ,entry.value);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: Text('NO'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ]
-                  
-                );
-              }
-            );
-          },
-          child: Container(
-            color: Color.fromARGB(248, 247, 195, 131),
-            margin: EdgeInsets.symmetric(vertical: 8.0),
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '(${number}),${entry.key}', // DateTimeの表示
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                for (int i = 0; i < entry.value.length; i++)
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        color: Color.fromARGB(248, 208, 247, 131),
-                        child: Text(
-                          '${entry.value[i].object.name} (${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
+                            for (int i = 0; i < entry.value.length; i++)
+                              Column(
+                                children: [
+                                  Container(
+                                  width: widget.width * 0.7,
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                  color: Color.fromARGB(248, 255, 255, 255),
+                                  child: Text(
+                                    '${entry.value[i].object.name}(${entry.value[i].object.options[entry.value[i].optionNumber]}) 個数: ${entry.value[i].oderPieces}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 24),
+                                  ),
+                                ),
+                                  Container(height: widget.height * 0.01,),
+                                ],
+                              ),
+                              
+                          ],
                         ),
                       ),
-                      Container(height: widget.height * 0.01,),
-                    ],
-                  ),
-                  
-              ],
+                    ),
+                        
+                ],
+              ),
             ),
-          ),
-        ),
-    ],
-  ),
-)
+          )
 
 
         ],

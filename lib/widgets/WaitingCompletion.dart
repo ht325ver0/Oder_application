@@ -7,8 +7,9 @@ class WaitingCompletion extends StatefulWidget {
   final double width;
   final double height;
   Map<DateTime,List<ServedProduct>> waitingOder;
+  int customerCounter;
 
-  WaitingCompletion({required this.onKeyPressed, required this.width, required this.height, required this.waitingOder});
+  WaitingCompletion({required this.onKeyPressed, required this.width, required this.height, required this.waitingOder, required this.customerCounter});
 
   @override
   State<WaitingCompletion> createState() => _WaitingCompletion();
@@ -16,11 +17,7 @@ class WaitingCompletion extends StatefulWidget {
 
 class _WaitingCompletion extends State<WaitingCompletion> {
 
-  void p(t){
-    debugPrint('Product: ${t.object.name}, OptionNumber: ${t.optionNumber}, Options length: ${t.options.length}, OderPieces: ${t.servedProduct.oderPieces}');
-  }
-
-  int number = 0;
+  int servedCounter = 0;
   
   @override
   Widget build(BuildContext context) {
@@ -36,14 +33,15 @@ class _WaitingCompletion extends State<WaitingCompletion> {
             height: widget.height*0.03,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text('出来上がり待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text('出来上がり待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
           ),
           SizedBox(
             width: widget.width * 0.95,
             height: widget.height * 0.8,
-            child: ListView(
+            child:SingleChildScrollView(
+            child: Column(
               children: [
-                for (var entry in widget.waitingOder.entries)                  
+                for (var entry in widget.waitingOder.entries)
                   InkWell(
                     onTap: () {
                       showDialog(
@@ -51,7 +49,7 @@ class _WaitingCompletion extends State<WaitingCompletion> {
                         builder: (context) {
                           return AlertDialog(
                             title: Text('この注文を呼び出しますか？'),
-                            content: (SingleChildScrollView(
+                            content: SingleChildScrollView(
                               child: ListBody(
                                 children: [
                                   for (var i in entry.value)
@@ -60,8 +58,8 @@ class _WaitingCompletion extends State<WaitingCompletion> {
                                     ),
                                 ],
                               ),
-                            )),
-                            actions:[
+                            ),
+                            actions: [
                               TextButton(
                                 child: Text('OK'),
                                 onPressed: () {
@@ -75,51 +73,54 @@ class _WaitingCompletion extends State<WaitingCompletion> {
                                   Navigator.of(context).pop();
                                 },
                               ),
-                            ]            
+                            ],
                           );
-                        }
+                        },
                       );
                     },
-                    child:Container(
+                    child: Container(
                       color: Color.fromARGB(248, 247, 195, 131),
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       padding: EdgeInsets.all(8.0),
+                      width: widget.width*0.9,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            '(${number}),${entry.key}', // DateTimeの表示
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            '${entry.value[0].counter}番,${entry.key.hour}:${entry.key.minute}', // DateTimeの表示
+                            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                           ),
-                          
                           for (var i in entry.value)
-                            
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
+                                  width: widget.width * 0.7,
                                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  color: Color.fromARGB(248, 131, 247, 168),
+                                  color: Color.fromARGB(248, 255, 255, 255),
                                   child: Text(
-                                    '(${i.object.options[i.optionNumber]}) 個数: ${i.oderPieces}',
-                                    
+                                    '${i.object.name}(${i.object.options[i.optionNumber]}) 個数: ${i.oderPieces}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 24),
                                   ),
                                 ),
-                                Container(height: widget.height * 0.01,),
+                                SizedBox(height: widget.height * 0.01),
                               ],
                             ),
                         ],
                       ),
                     ),
-                  ),
+                ),
               ],
-            ),
+          ),
+        ),
           )
         ],
       )
     );
     }catch (e, stackTrace) {
       // エラーの内容を表示
-      debugPrint('Error: $e');
+      debugPrint('Error2: $e\n');
       
       // スタックトレースを表示
       debugPrint('Stack Trace: $stackTrace');

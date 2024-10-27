@@ -14,12 +14,18 @@ class ServedProduct{
 
   DateTime? time;
 
+  bool served;
+
+  int counter;
+
   ServedProduct({
     required this.object,
     required this.optionNumber,
     required this.oderPieces,
     this.memo = null,
-    this.time = null
+    this.time = null,
+    this.served = false,
+    required this.counter
   });
 
   ///小計計算

@@ -7,11 +7,12 @@ import 'package:oder_application/firestore.dart';
 
 
 class CallWaittingPage extends StatefulWidget {
-  CallWaittingPage({super.key,required this.title, required this.waitingOder, required this.callingOder});
+  CallWaittingPage({super.key,required this.title, required this.waitingOder, required this.callingOder, required this.counter});
 
   final String title;
   Map<DateTime,List<ServedProduct>> waitingOder;
   Map<DateTime,List<ServedProduct>> callingOder;
+  int counter;
 
 
   @override
@@ -24,25 +25,39 @@ class _CallWaittingPage extends State<CallWaittingPage> {
   List<Product> productsList = [];
 
   
-  Future<void> fetchServedProducts() async {
-    Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getServedProduct(productsList);
-    setState(() {
-      widget.waitingOder = fetchedProducts;
-    });
-    
-    debugPrint("q${fetchedProducts}");
-  }
+  
 
   Future<void> fetchProducts() async {
+  try {
     List<Product> fetchedProducts = await collection.getProductList();
-    setState(() {
-      productsList = fetchedProducts;
-    });
     
-    debugPrint("k${fetchedProducts}");
+    // setState内でデータを反映
+    setState(() {
+      productsList = fetchedProducts;  // データがセットされたタイミングでデバッグ
+    });
+  } catch (e) {
+    debugPrint('Error fetching products: $e');
   }
+}
+
+
   void nullFunction(String a){
 
+  }
+
+  Future<void> fetchServedProducts() async {
+    try{
+      Map<DateTime,List<ServedProduct>> fetchedProducts = await collection.getServedProduct(productsList, widget.counter);
+      setState(() {
+        widget.waitingOder = fetchedProducts;
+      });
+      
+      debugPrint("qa${fetchedProducts}");
+      
+    }catch(e){
+      debugPrint('koko');
+      debugPrint('fetchServedProductsError: $e');
+    }
   }
 
   void getCallOder(DateTime time, List<ServedProduct> products){
@@ -52,6 +67,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
         MapEntry(time, products),
       ]);
       widget.waitingOder.remove(time);
+      collection.sarved(time, products, widget.counter);
     });
       
   }
@@ -64,15 +80,41 @@ class _CallWaittingPage extends State<CallWaittingPage> {
       
   }
 
+  Future<void> fetchingCustomerCounte() async {
+    try{
+      int fetchedCounte = await collection.getCustomerCounte();
+      setState(() {
+        widget.counter = fetchedCounte;
+      });
+      
+      debugPrint("qa${fetchedCounte}");
+      
+    }catch(e){
+      debugPrint('fetchingCustomerCounteError: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
       
     collection = Firestore();
-    fetchProducts();
-    fetchServedProducts();
+    _initializeData();
     
   }
+///firebaseで登録したproductsを取ってくル。
+  Future<void> _initializeData() async {
+  await fetchProducts();  // fetchProductsが完了するのを待つ
+  await fetchingCustomerCounte();
+  // ここで`productsList`にデータがあることを保証
+  if (productsList.isNotEmpty) {
+    await fetchServedProducts();  // productsListを使う関数をその後に実行
+  } else {
+    debugPrint('Error: productsList is still empty');
+  }
+  
+  
+}
 
   
   
@@ -82,12 +124,6 @@ class _CallWaittingPage extends State<CallWaittingPage> {
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
-
-    
-
-    
-
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 237, 233, 230),
@@ -109,7 +145,7 @@ class _CallWaittingPage extends State<CallWaittingPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            WaitingCompletion(onKeyPressed: getCallOder, width: screenWidth*0.48, height: screenHeight*0.96, waitingOder: widget.waitingOder),
+            WaitingCompletion(onKeyPressed: getCallOder, width: screenWidth*0.48, height: screenHeight*0.96, waitingOder: widget.waitingOder, customerCounter: widget.counter),
             Calling(onKeyPressed: callingCustamer, width: screenWidth*0.48, height: screenHeight*0.96, callingOder: widget.callingOder),
           ]
         ),

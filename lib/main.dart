@@ -30,11 +30,11 @@ class MyApp extends StatelessWidget {
     Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, price: 100, options: ['塩','甘口','中辛','辛口','デス']);
     Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, price: 100, options: ['塩','甘口','中辛','辛口','デス']);
 
-    late ServedProduct product1 = ServedProduct(object: GrilledChickenSkin, optionNumber: 2, oderPieces: 2, memo: '',time: DateTime.utc(1989, 11, 9));
-    late ServedProduct product2 = ServedProduct(object: GrilledChickenThigh, optionNumber: 1, oderPieces: 1, memo: '',time: DateTime.utc(1989, 11, 9)); 
+    //late ServedProduct product1 = ServedProduct(object: GrilledChickenSkin, optionNumber: 2, oderPieces: 2, memo: '',time: DateTime.utc(1989, 11, 9));
+    //late ServedProduct product2 = ServedProduct(object: GrilledChickenThigh, optionNumber: 1, oderPieces: 1, memo: '',time: DateTime.utc(1989, 11, 9)); 
 
-    late ServedProduct product3 = ServedProduct(object: GrilledChickenSkin, optionNumber: 4, oderPieces: 1, memo: 'あいう',time: DateTime.utc(1989, 11, 10));
-    late ServedProduct product4 = ServedProduct(object: GrilledChickenThigh, optionNumber: 0, oderPieces: 3, memo: '',time: DateTime.utc(1989, 11, 11)); 
+    //late ServedProduct product3 = ServedProduct(object: GrilledChickenSkin, optionNumber: 4, oderPieces: 1, memo: 'あいう',time: DateTime.utc(1989, 11, 10));
+    //late ServedProduct product4 = ServedProduct(object: GrilledChickenThigh, optionNumber: 0, oderPieces: 3, memo: '',time: DateTime.utc(1989, 11, 11)); 
 
   // This widget is the root of your application.
   @override
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: CallWaittingPage(title: 'タイトル',waitingOder:  {DateTime.utc(1989, 11, 9):[product1,product2],DateTime.utc(1989, 11, 10):[product3],DateTime.utc(1989, 11, 11):[product4]},callingOder: {},),
+      home: CallWaittingPage(title: 'タイトル',waitingOder:  {},callingOder: {},counter: 0,),
     );
   }
 }
