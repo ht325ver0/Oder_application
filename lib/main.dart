@@ -40,13 +40,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 58, 146, 183)),
         useMaterial3: true,
 
       ),
-      home: CallWaittingPage(title: 'タイトル',waitingOder:  {},callingOder: {},counter: 0,),
+      home: CallWaittingPage(title: '調理待ち一覧ページ',waitingOder:  {},callingOder: {},counter: 0,),
     );
   }
 }

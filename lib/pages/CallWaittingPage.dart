@@ -138,9 +138,15 @@ class _CallWaittingPage extends State<CallWaittingPage> {
 
           actions: [
             TextButton.icon(
-              icon: const Icon(Icons.point_of_sale),
-              label: const Text('会計',selectionColor: Color.fromARGB(0, 0, 100, 0),),
-              onPressed: () => {},
+              icon: const Icon(Icons.refresh),
+              label: const Text('',selectionColor: Color.fromARGB(0, 0, 100, 0),),
+              onPressed: () => {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => super.widget)
+                )
+              },
             ),
           ],
         ),

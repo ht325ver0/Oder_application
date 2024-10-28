@@ -87,7 +87,7 @@ class Firestore{
 
       debugPrint('Getting document for today: $today');
 
-      for(int i = 0; i < counter; i++){
+      for(int i = 1; i <= counter; i++){
         CollectionReference customer = todayData.collection('${i}');
         QuerySnapshot customerSnapshot = await customer.get();
 
