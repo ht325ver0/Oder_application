@@ -140,25 +140,44 @@ class _CallWaittingPage extends State<CallWaittingPage> {
             TextButton.icon(
               icon: const Icon(Icons.refresh),
               label: const Text('',selectionColor: Color.fromARGB(0, 0, 100, 0),),
-              onPressed: () => {
-                Navigator.pushReplacement(
+              onPressed: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => super.widget)
-                )
+                    builder: (context) => CallWaittingPage(
+                      title: '調理待ち一覧ページ',
+                      waitingOder: {},
+                      callingOder: {},
+                      counter: 0,
+                    ),
+                  ),
+                );
               },
             ),
           ],
         ),
-      body: Center(
-        child: Row(
+      body: StreamBuilder(
+        stream: collection.getCookingProductsStream(productsList, widget.counter),
+        builder: (context, snapshot){
+          Map<DateTime, List<ServedProduct>> servedProductMap;
+          if (snapshot.hasData) {
+            servedProductMap = snapshot.data ?? {};
+          } else {
+            servedProductMap = {}; // データがない場合の初期化
+          }
+
+          widget.waitingOder = servedProductMap;
+          
+  
+          return Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             WaitingCompletion(onKeyPressed: getCallOder, width: screenWidth*0.48, height: screenHeight*0.96, waitingOder: widget.waitingOder, customerCounter: widget.counter),
             Calling(onKeyPressed: callingCustamer, width: screenWidth*0.48, height: screenHeight*0.96, callingOder: widget.callingOder),
-          ]
+          ],
+          );
+        }
         ),
-      ),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:oder_application/models/ServedProduct.dart';
 import 'package:oder_application/widgets/WaitingCompletion.dart';
 
 class Calling extends StatefulWidget {
-  final Function(DateTime time, List<ServedProduct> products) onKeyPressed;
+  final Function(DateTime time, List<ServedProduct> products) onKeyPressed;///呼び出してこなかった人のボタンを追加する
   final double width;
   final double height;
   Map<DateTime,List<ServedProduct>> callingOder;

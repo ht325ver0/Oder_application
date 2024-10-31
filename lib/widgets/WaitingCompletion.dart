@@ -33,7 +33,7 @@ class _WaitingCompletion extends State<WaitingCompletion> {
             height: widget.height*0.05,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text('出来上がり待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
+            child: Center(child:Text('調理待ち',selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
           ),
           SizedBox(
             width: widget.width * 0.95,
